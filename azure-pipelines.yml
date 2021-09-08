@@ -27,13 +27,13 @@ steps:
   displayName: 'Code analysis'
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'package'
     publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
     mavenVersionOption: 'Default'
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
+    checkStyleRunAnalysis: true
     pmdRunAnalysis: true
 
 - task: Maven@3
@@ -46,9 +46,19 @@ steps:
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
-    checkStyleRunAnalysis: true
     findBugsRunAnalysis: true
-
+- task: CopyFiles@2
+  displayName: 'Copying Code Reviews'
+  inputs:
+    SourceFolder: '$(Build.Repository.LocalPath)/target'
+    Contents: '*.xml'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publishing Code Reviews'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'Code Review'
+    publishLocation: 'Container'
 - task: Maven@3
   displayName: 'Unit testing'
   inputs:
@@ -62,6 +72,12 @@ steps:
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
+
+- task: PublishTestResults@2
+  displayName: 'Uploading Test Results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/TEST-*.xml'
 
 - task: Maven@3
   displayName: 'Creation of war/exe file'
