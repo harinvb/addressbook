@@ -27,7 +27,7 @@ steps:
   displayName: 'Code analysis'
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 
+    goals: 'package'
     publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
     mavenVersionOption: 'Default'
