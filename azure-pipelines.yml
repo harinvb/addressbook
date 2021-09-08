@@ -94,7 +94,7 @@ steps:
   displayName: 'Copying artifacts'
   inputs:
     SourceFolder: '$(Build.Repository.LocalPath)/target'
-    Contents: '**'
+    Contents: '*.war'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   displayName: 'Publishing artifacts'
